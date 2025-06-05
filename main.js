@@ -3,7 +3,9 @@
  *
  * depends on jQuery>=1.7
  */
-
+var canvas = [];
+var scratchers = [];
+var checkinprogress = false;
 let surname;
 let soundHandle = new Audio();
 let triggered=false;
@@ -14,7 +16,6 @@ let rnd;
 // locations of correct gender circles
 let loc = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]];
 let pct =[];
-let scratchers = [];
 (function() {
     /**
      * Returns true if this browser supports canvas
@@ -93,11 +94,9 @@ let w = ["","","Twin Boys","","","Twin Girls","","Boy & Girl Twins"];
                 }
                 
                 document.getElementsByTagName("body")[0].style.backgroundImage = 'none';
-                $('body').css({
-                    'background-image:' : color,
-                    'background-image:' : color3a,
-                    'background-image:' : color3b,
-                });
+                $('body').css('background-image', color);
+                $('body').css('-webkit-background-image', color3b); // For WebKit browsers
+                $('body').css('-moz-background-image', color3a); // Standard
                 //$('.images').hide();              
                 document.getElementById("H3").insertAdjacentHTML('afterend', "<h4 id='testtext' style='white-space:normal'> In the real product you buy, here it will say '" + gender[gen] + "' with " + col[gen] +" background color. </h4>");
                 $('#H3').hide();
@@ -241,11 +240,67 @@ let w = ["","","Twin Boys","","","Twin Girls","","Boy & Girl Twins"];
         soundHandle.currentTime = 0;    
         return false;
     };
+    function fitCanvastoDiv() {
+        if (checkinprogress) {
+            return;
+        }
+        checkinprogress=true;
+
+        setTimeout(function () {
+            
+            var ttd = $(canvas[0]).parent();
+            console.log(ttd);
+            for (let index = 0; index < scratchers.length; index++) {
+                // var ttd = document.getElementById('scratcher-box');
+                canvas[index].width = ttd.width();
+                canvas[index].height = canvas[index].width;
+                if(scratchers[index]) { 
+                    if (triggered) {
+                    scratchers[index].resetnoclear(true);
+                    } else {
+                    scratchers[index].resetnoclear(false);
+                    }
+                }     
+            }
+            checkinprogress=false;        
+            //alert(window.innerHeight + " " + window.innerWidth);
+
+        },500);
+            
+       
+    }
+    
+    /**
+     * Assuming canvas works here, do all initial page setup
+     */
+    // function handleOrientationChange(mql) {
+    //     if (mql.matches) {
+    //         /* The viewport is currently in portrait orientation */
+    //         if(window.innerHeight>900) {
+    //             size=130}
+    //         else {
+    //             size=100;
+    //         }
+ 
+    //       } else {
+    //         /* The viewport is not currently in portrait orientation, therefore landscape */
+    //         console.log(window.innerHeight + " " + window.innerWidth);
+    //         size=100;
+    //         if (window.innerWidth>900 && window.innerWidth>window.innerHeight*1.2){
+    //             console.log("yes");
+    //             size = 130;
+    //         }
+    //       }
+          
+    //       $('#scratcher1').width(size);
+    //       $('#scratcher1').css('width',size);
+
+    
+    //   }
 
 function initPage() {
         let scratcherLoadedCount = 0;
         pct =new Array(9);
-        scratchers = new Array(9);
         let i, i1;
  
         if (params.get('gen')!=null) {
@@ -255,7 +310,7 @@ function initPage() {
         if (surname !=null && surname.replace(/\s/g, '').length) {
             $("#baby").text('Baby ' + surname+'(s)');}
         else {
-            $("#baby").text('the baby(ies)');
+            $("#baby").text('the Baby(ies)');
             surname="the";
             document.getElementById('surname').style.fontWeight="normal";
             $('#baby').css('font-weight', 'normal');
@@ -264,18 +319,18 @@ function initPage() {
         //document.getElementById('intro').innerHTML= "This is a gender reveal scratch off for <strong>" + surname + "</strong> family. It contains sound when the gender is revealed. Do you want to continue with sound?";
         document.getElementById('surname').innerHTML= surname;
 
-        document.getElementById('id01').style.display='block';
+        document.getElementById('id01').style.display = 'block';
         $('.nosoundbtn').on("click", function (e) {
-            document.getElementById('id01').style.display='none';
-            nosound=true;
+            document.getElementById('id01').style.display = 'none';
+            nosound = true;
         });
         $('.withsoundbtn').on("click", function (e) {
-            document.getElementById('id01').style.display='none';
-            nosound=false;
-            if (soundHandle.currentTime!=0) {return;}
+            document.getElementById('id01').style.display = 'none';
+            nosound = false;
+            if (soundHandle.currentTime != 0) { return; }
                 soundHandle = document.getElementById('soundHandle');  
                 soundHandle.autoplay = true;
-                soundHandle.muted=false;
+                soundHandle.muted = false;
                 soundHandle.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
                 soundHandle.src = 'audio/celebrate.mp3';
                 soundHandle.play();
@@ -283,10 +338,11 @@ function initPage() {
         });
         document.addEventListener(
             "visibilitychange",
-             function(evt) {
+             function (evt) {
               if (document.visibilityState != "visible") {
                 soundHandle.pause();
-                soundHandle.currentTime=0;              }
+                soundHandle.currentTime = 0;              
+            }
             },
             false,
           );
@@ -298,14 +354,15 @@ function initPage() {
         function onScratcherLoaded(ev) {
             
             scratcherLoadedCount++;
-            $("table1").width($(window).width());
+            //$("table1").width($(window).width());
             if (scratcherLoadedCount == scratchers.length) {
                 // all scratchers loaded!
     
                 // bind the reset button to reset all scratchers
-                $('#resetbutton').on('click', function() {
+                $('#resetbutton').on('click', function () {
                         onResetClicked(scratchers);
                     });
+                    fitCanvastoDiv();
     
                 // hide loading text, show instructions text
                 //$('#loading-text').hide();
@@ -314,11 +371,14 @@ function initPage() {
         };
     
         // create new scratchers
-       
+        scratchers = new Array(9);
+        canvas = new Array(9);
+
         rnd = 2;
         for (i = 0; i < scratchers.length; i++) {
             i1 = i + 1;
             scratchers[i] = new Scratcher('scratcher' + i1);
+            canvas[i] = document.getElementById("scratcher" + i1);
     
             // set up this listener before calling setImages():
             scratchers[i].addEventListener('imagesloaded', onScratcherLoaded);
@@ -345,8 +405,9 @@ function initPage() {
         scratchers[7].addEventListener('scratchesended', scratcher8Changed);
         scratchers[8].addEventListener('scratchesended', scratcher9Changed);
 
-        let canvas = document.getElementById('scratcher1');
-        canvas.onmousemove = null;
+        // var canvas = document.getElementById('scratcher1');
+        // canvas.onmousemove = null;
+
         // Or if you didn't want to do it every scratch (to save CPU), you
         // can just do it on 'scratchesended' instead of 'scratch':
         //scratchers[2].addEventListener('scratchesended', scratcher3Changed);
@@ -355,7 +416,7 @@ function initPage() {
     /**
      * Handle page load
      */
-    $(function() {
+    $(function () {
         if (supportsCanvas()) {
             initPage();
         } else {

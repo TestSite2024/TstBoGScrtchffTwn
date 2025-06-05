@@ -186,8 +186,8 @@ text-align: right;
     font-size: calc(1rem + 1vw);
   }
   #scratcher-box {
-    width: 18em;
-    height: 18em;
+    width: 20em;
+    height: 20em;
     top: 50%;
     left: 0%;
   }
@@ -214,14 +214,28 @@ text-align: right;
     width: calc(55% - 10px);
   }
 }
-@media screen and (max-height:321px){ 
+@media screen and (max-height:355px){ 
+  .pagetop h1 {
+    font-size: calc(1.2rem + 5vw);
+  }
+  #scratcher-box {
+    width: 18em;
+    height: 18em;
+    top: 50%;
+    left: 0%;
+  } 
+  .images{
+    max-width: 250px !important;
+  }
+}
+@media screen and (max-height:320px){ 
   .pagetop h1 {
     font-size: calc(1rem + 5vw);
   }
   #scratcher-box {
     width: 16em;
     height: 16em;
-    top: 52%;
+    top: 50%;
     left: 5%;
   } 
 /*   .images{
@@ -235,7 +249,7 @@ text-align: right;
   #scratcher-box {
     width: 15em;
     height: 15em;
-    top: 52%;
+    top: 50%;
     left: 3vw;
   } 
 
@@ -284,7 +298,7 @@ cursor: grab;
 }
 #scratcher1, #scratcher2, #scratcher3, #scratcher4, #scratcher5, #scratcher6, #scratcher7, #scratcher8, #scratcher9 {
   width: 100%;
-  padding: 5px;
+  padding: 3px;
   
 }
 #resetbutton {

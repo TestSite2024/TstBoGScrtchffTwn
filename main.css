@@ -148,8 +148,8 @@ white-space:normal;
 
   #scratcher-box {
     position:absolute;
-    width: 30em;
-    height: 30em; 
+    width: 26em;
+    height: 26em; 
     top: 60%;
   } 
   .pagetop h4 {
@@ -171,9 +171,9 @@ white-space:normal;
  
   #scratcher-box {
     position:absolute;
-    width: 26em;
-    height: 26em; 
-    top: 73%;
+    width: 24em;
+    height: 24em; 
+    top: 70%;
   }
 }
 @media (max-width: 375px), (max-height:667px) {
@@ -240,6 +240,7 @@ white-space:normal;
   cursor: grab;
   }
 table { 
+  width:100%;
   table-layout:fixed;
   /**transform: translate(0%, 50%);
   top: 75%;
