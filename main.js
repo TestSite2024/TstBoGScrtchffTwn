@@ -249,17 +249,17 @@ let w = ["","","Twin Boys","","","Twin Girls","","Boy & Girl Twins"];
         setTimeout(function () {
             
             var ttd = $(canvas[0]).parent();
-            console.log(ttd);
+            //console.log(ttd);
             for (let index = 0; index < scratchers.length; index++) {
                 // var ttd = document.getElementById('scratcher-box');
                 canvas[index].width = ttd.width();
                 canvas[index].height = canvas[index].width;
                 if(scratchers[index]) { 
-                    if (triggered) {
+                    /* if (triggered) {
                     scratchers[index].resetnoclear(true);
-                    } else {
+                    } else { */
                     scratchers[index].resetnoclear(false);
-                    }
+                    //}
                 }     
             }
             checkinprogress=false;        
